@@ -2,8 +2,10 @@
 
 ## Backend
 
+- `$ brew install openssl`
+
 - `$ opam install dream`
 - `$ npm install esy && npx esy`
-- `$ esy start`
+- `$ npx esy start`
 
 ## Frontend

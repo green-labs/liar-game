@@ -6,14 +6,14 @@ let home =
     var socket = new WebSocket("ws://" + window.location.host + "/ws");
 
     socket.onopen = function () {
-      socket.send(JSON.stringify({"message_type":"Hell", "message": "Low"}));
+      socket.send(JSON.stringify({"event":"Hell", "message": "Low"}));
     };
 
     socket.onmessage = function (e) {
       alert(e.data);
     };
     test = function () {
-      socket.send(JSON.stringify({"message_type":"Hell", "message": "Low"}));
+      socket.send(JSON.stringify({"event":"Hell", "message": "Low"}));
     }
 
     </script>
@@ -25,13 +25,17 @@ let home =
   </html>
 
 type message_object = {
-    message_type: string;
+    event: string;
     message: string;
 } [@@deriving yojson]
+(* Map.Make *)
+
+(* open Base *)
+
+(* let empty = Map.empty (module String) *)
 
 
-
-let handle_client client =  
+let handle_client client _ =  
   let rec loop () = 
     match%lwt Dream.receive client with 
     | Some(message') ->
@@ -51,9 +55,15 @@ let () =
       Dream.get "ws"
       (fun req -> 
         (* Sec-WebSocket-Key 가 없으면 뱉기 *)
+        
         let websocket_key = Dream.header req "Sec-WebSocket-Key" in 
+        let id = Dream.cookie req "id" in 
+        let _ = match id with 
+        | Some(id') -> Dream.log "%s" id'
+        | None -> () in
+        
         match websocket_key with
-        | Some(_) -> Dream.websocket handle_client
+        | Some(ws_key) -> Dream.websocket (fun x -> handle_client x ws_key)
         | None -> Dream.websocket Dream.close_websocket
         );
     ]

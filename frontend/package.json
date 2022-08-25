@@ -19,6 +19,7 @@
     "@remix-run/react": "1.1.1",
     "@remix-run/vercel": "1.1.1",
     "@vercel/node": "^1.15.2",
+    "js-cookie": "^3.0.1",
     "ky": "^0.31.1",
     "ky-universal": "^0.10.1",
     "lottie-web": "^5.9.6",

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as Lottie from "../../bindings/Lottie.js";
+import * as JsCookie from "js-cookie";
 
 function Index$default(Props) {
   return React.createElement("div", {
@@ -25,6 +26,7 @@ function Index$default(Props) {
                       var target = e.target;
                       var value = target.nickname.value;
                       console.log("id=" + value);
+                      JsCookie.default.set("id", value);
                       
                     })
                 }, React.createElement("input", {

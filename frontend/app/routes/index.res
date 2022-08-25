@@ -1,4 +1,5 @@
-open Webapi.Dom
+@module("js-cookie") @scope("default")
+@val external setCookie: (string, string) => unit = "set"
 
 @react.component
 let default = () => {
@@ -24,17 +25,8 @@ let default = () => {
         let value = target["nickname"]["value"]
         Js.Console.log(`id=${value}`)
 
-        // 좋슴당
-        // TODO: 쿠키 셋팅
-        // 아래 코드는 동작해야함
-        // let cookie = `id=${value}`
-        // let htmlDocument = document->Document.asHtmlDocument->Belt.Option.getExn
-        // HtmlDocument.setCookie(htmlDocument, cookie)
-        // 또는 아래 코드
-        // switch Webapi.Dom.document->Webapi.Dom.Document.asHtmlDocument { | Some(doc) => Webapi.Dom.HtmlDocument.setCookie(doc, "test=test") | None => () }
         // TODO: 웹소켓 입장 후 redirect
-
-        ()
+        setCookie("id", `${value}`)
       }}>
       <input
         name="nickname"

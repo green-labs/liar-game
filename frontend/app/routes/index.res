@@ -3,6 +3,8 @@
 
 @react.component
 let default = () => {
+  let navigate = Remix.useNavigate()
+
   <div className="flex flex-col justify-center items-center text-center text-white mx-12 gap-y-4">
     <Lottie.LoaderComponent
       className="w-48"
@@ -25,8 +27,24 @@ let default = () => {
         let value = target["nickname"]["value"]
         Js.Console.log(`id=${value}`)
 
-        // TODO: 웹소켓 입장 후 redirect
         setCookie("id", `${value}`)
+        navigate("/lobby", None)
+
+        // TODO: 다른 페이지 만들어서 거기서 처리하도록 옮겨야함
+        open Webapi
+        let socket = WebSocket.make("ws://localhost:8080/ws")
+        
+        socket->WebSocket.addOpenListener(_ => {
+          let dict = Js.Dict.empty()
+          dict->Js.Dict.set("event", "Hell"->Js.Json.string) 
+          dict->Js.Dict.set("message", "Low"->Js.Json.string) 
+          let dict2 = dict->Js.Json.object_->Js.Json.stringify
+          socket->WebSocket.sendText(dict2)
+        })
+
+        socket->WebSocket.addMessageListener(event => {
+          Js.log2("Message from server ", event.data)
+        })
       }}>
       <input
         name="nickname"

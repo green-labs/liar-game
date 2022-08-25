@@ -49,3 +49,7 @@ module Link = {
 @module("@remix-run/node") external json: 'a => Webapi.Fetch.Response.t = "json"
 
 @module("@remix-run/react") external useLoaderData: unit => 'a = "useLoaderData"
+
+type navigate = (string, option<string>) => unit
+
+@module("@remix-run/react") external useNavigate: unit => navigate = "useNavigate"

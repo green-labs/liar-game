@@ -28,23 +28,8 @@ function Index$default(Props) {
                       e.preventDefault();
                       var target = e.target;
                       var value = target.nickname.value;
-                      console.log("id=" + value);
                       JsCookie.default.set("id", value);
-                      Curry._2(navigate, "/lobby", undefined);
-                      var socket = new WebSocket("ws://localhost:8080/ws");
-                      socket.addEventListener("open", (function (param) {
-                              var dict = {};
-                              dict["event"] = "Hell";
-                              dict["message"] = "Low";
-                              var dict2 = JSON.stringify(dict);
-                              socket.send(dict2);
-                              
-                            }));
-                      socket.addEventListener("message", (function ($$event) {
-                              console.log("Message from server ", $$event.data);
-                              
-                            }));
-                      
+                      return Curry._2(navigate, "/lobby", undefined);
                     })
                 }, React.createElement("input", {
                       className: "daimonion text-xs text-black px-2 py-1 rounded-md outline-0 caret-rose-800",

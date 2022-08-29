@@ -25,26 +25,9 @@ let default = () => {
         e->ReactEvent.Synthetic.preventDefault
         let target = e->ReactEvent.Synthetic.target
         let value = target["nickname"]["value"]
-        Js.Console.log(`id=${value}`)
 
         setCookie("id", `${value}`)
         navigate("/lobby", None)
-
-        // TODO: 다른 페이지 만들어서 거기서 처리하도록 옮겨야함
-        open Webapi
-        let socket = WebSocket.make("ws://localhost:8080/ws")
-        
-        socket->WebSocket.addOpenListener(_ => {
-          let dict = Js.Dict.empty()
-          dict->Js.Dict.set("event", "Hell"->Js.Json.string) 
-          dict->Js.Dict.set("message", "Low"->Js.Json.string) 
-          let dict2 = dict->Js.Json.object_->Js.Json.stringify
-          socket->WebSocket.sendText(dict2)
-        })
-
-        socket->WebSocket.addMessageListener(event => {
-          Js.log2("Message from server ", event.data)
-        })
       }}>
       <input
         name="nickname"

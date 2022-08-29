@@ -28,7 +28,7 @@ function Index$default(Props) {
                       e.preventDefault();
                       var target = e.target;
                       var value = target.nickname.value;
-                      JsCookie.default.set("id", value);
+                      JsCookie.default.set("nickname", value);
                       return Curry._2(navigate, "/lobby", undefined);
                     })
                 }, React.createElement("input", {

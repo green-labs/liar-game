@@ -1,5 +1,3 @@
-@module("js-cookie") @scope("default")
-@val external setCookie: (string, string) => unit = "set"
 
 @react.component
 let default = () => {
@@ -26,7 +24,7 @@ let default = () => {
         let target = e->ReactEvent.Synthetic.target
         let value = target["nickname"]["value"]
 
-        setCookie("id", `${value}`)
+        Cookie.setCookie("nickname", value)
         navigate("/lobby", None)
       }}>
       <input

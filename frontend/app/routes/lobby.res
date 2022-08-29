@@ -21,26 +21,37 @@ let test_users = [user1]
 
 @react.component
 let default = () => {
-  open Webapi
-  let socket = WebSocket.make("ws://localhost:8080/ws")
-  let users = []
+  React.useEffect0(_ => {
+    let socket = Webapi.WebSocket.make("ws://localhost:8080/ws")
+    let users = []
 
-  socket->WebSocket.addOpenListener(_ => {
-    let dict = Js.Dict.empty()
-    dict->Js.Dict.set("event", "Hell"->Js.Json.string)
-    dict->Js.Dict.set("message", "Low"->Js.Json.string)
-    let dict2 = dict->Js.Json.object_->Js.Json.stringify
-    socket->WebSocket.sendText(dict2)
+    socket->Webapi.WebSocket.addOpenListener(_ => {
+      let nickname = Cookie.getCookie("nickname")
+      let userDict = Js.Dict.empty()
+
+      userDict->Js.Dict.set("nickname", nickname->Js.Json.string)
+      let containerDict = Js.Dict.empty()
+      containerDict->Js.Dict.set("event", "enter"->Js.Json.string)
+      containerDict->Js.Dict.set(
+        "message",
+        userDict->Js.Json.object_->Js.Json.stringify->Js.Json.string,
+      )
+      let reqDict = containerDict->Js.Json.object_->Js.Json.stringify
+      socket->Webapi.WebSocket.sendText(reqDict)
+    })
+
+    socket->Webapi.WebSocket.addMessageListener(event => {
+      Js.log2("Message from server ", event.data)
+      // 여기에 users 입장할 때 추가 / 나갈 때 삭제 해줘야함
+      Js.log2("Current users", users)
+    })
+    None
   })
 
-  socket->WebSocket.addMessageListener(event => {
-    Js.log2("Message from server ", event.data)
-    // 여기에 users 입장할 때 추가 / 나갈 때 삭제 해줘야함
-    Js.log2("Current users", users)
-  })
-  <div>
+  <div className="m-8">
     // <div> {users->Array.map(user => user.nickname->React.string)} </div> 이 코드가 타입이 안맞는데 잘 모르겠음
     <form
+      className="flex flex-col gap-y-4"
       onSubmit={e => {
         e->ReactEvent.Synthetic.preventDefault
         // ready할 때 문제 전송

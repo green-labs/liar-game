@@ -1,17 +1,14 @@
-type user = {
-  id: string,
-  nickname: string,
-  profile: string,
+type event_data = {
+  event: string,
+  message: Atom.user,
 }
 
-type data = {
-  event: string,
-  message: user,
-}
+@scope("JSON") @val
+external parseWsData: string => event_data = "parse"
 
 // test data
 let user1 = {
-  id: "user1",
+  Atom.id: "user1",
   nickname: "nickname1",
   profile: "https://scontent-ssn1-1.xx.fbcdn.net/v/t1.6435-9/78848672_107601907402235_75891505184636928_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=4cIiZSc3xL0AX_QFvWj&_nc_ht=scontent-ssn1-1.xx&oh=00_AT-yLPr8iWd8cEIxqskbsmrqCSmHGdvX8rdwePcExe0ZXA&oe=632D464D",
 }
@@ -41,9 +38,22 @@ let default = () => {
     })
 
     socket->Webapi.WebSocket.addMessageListener(event => {
+      let parsed_data = parseWsData(Js.Json.stringify(event.data))
+
       Js.log2("Message from server ", event.data)
-      // 여기에 users 입장할 때 추가 / 나갈 때 삭제 해줘야함
       Js.log2("Current users", users)
+      // 입장할 때
+      let setValue = Jotai.Utils.useUpdateAtom(Atom.users_atom)
+      switch parsed_data.event {
+        // enter 와 exit을 polymorphic variants로 합시다!!
+      | "enter" => {
+          setValue(users => Array.concat(users, [parsed_data.message]))
+        }
+      | "exit" => {
+        setValue(users => Array.keep(users, (user) => user.id != parsed_data.message.id))
+      }
+      | _ => ()
+      }
     })
     None
   })

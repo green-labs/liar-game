@@ -7,18 +7,9 @@ import * as JsCookie from "js-cookie";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Utils from "jotai/utils";
 
-var user1 = {
-  id: "user1",
-  nickname: "nickname1",
-  profile: "https://scontent-ssn1-1.xx.fbcdn.net/v/t1.6435-9/78848672_107601907402235_75891505184636928_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=4cIiZSc3xL0AX_QFvWj&_nc_ht=scontent-ssn1-1.xx&oh=00_AT-yLPr8iWd8cEIxqskbsmrqCSmHGdvX8rdwePcExe0ZXA&oe=632D464D"
-};
-
-var test_users = [user1];
-
 function Lobby$default(Props) {
   React.useEffect((function () {
           var socket = new WebSocket("ws://localhost:8080/ws");
-          var users = [];
           socket.addEventListener("open", (function (param) {
                   var nickname = JsCookie.default.get("nickname");
                   var userDict = {};
@@ -33,7 +24,6 @@ function Lobby$default(Props) {
           socket.addEventListener("message", (function ($$event) {
                   var parsed_data = JSON.parse(JSON.stringify($$event.data));
                   console.log("Message from server ", $$event.data);
-                  console.log("Current users", users);
                   var setValue = Utils.useUpdateAtom(Atom.users_atom);
                   var match = parsed_data.event;
                   switch (match) {
@@ -79,8 +69,6 @@ function Lobby$default(Props) {
 var $$default = Lobby$default;
 
 export {
-  user1 ,
-  test_users ,
   $$default ,
   $$default as default,
   

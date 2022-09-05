@@ -6,21 +6,10 @@ type event_data = {
 @scope("JSON") @val
 external parseWsData: string => event_data = "parse"
 
-// test data
-let user1 = {
-  Atom.id: "user1",
-  nickname: "nickname1",
-  profile: "https://scontent-ssn1-1.xx.fbcdn.net/v/t1.6435-9/78848672_107601907402235_75891505184636928_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=4cIiZSc3xL0AX_QFvWj&_nc_ht=scontent-ssn1-1.xx&oh=00_AT-yLPr8iWd8cEIxqskbsmrqCSmHGdvX8rdwePcExe0ZXA&oe=632D464D",
-}
-
-// test data
-let test_users = [user1]
-
 @react.component
 let default = () => {
   React.useEffect0(_ => {
     let socket = Webapi.WebSocket.make("ws://localhost:8080/ws")
-    let users = []
 
     socket->Webapi.WebSocket.addOpenListener(_ => {
       let nickname = Cookie.getCookie("nickname")
@@ -41,11 +30,9 @@ let default = () => {
       let parsed_data = parseWsData(Js.Json.stringify(event.data))
 
       Js.log2("Message from server ", event.data)
-      Js.log2("Current users", users)
-      // 입장할 때
       let setValue = Jotai.Utils.useUpdateAtom(Atom.users_atom)
       switch parsed_data.event {
-        // enter 와 exit을 polymorphic variants로 합시다!!
+        // TODO: Refactor: enter 와 exit을 polymorphic variants로 합시다!!
       | "enter" => {
           setValue(users => Array.concat(users, [parsed_data.message]))
         }
